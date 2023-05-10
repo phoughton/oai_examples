@@ -36,13 +36,21 @@ for url in test_code.keys():
 
 print(message_flow)
 
-# On the command line prompt the user to enter the test results from pytest
-test_results = input("Enter the test results from pytest: ")
+# On the command line prompt the user to enter the test results from pytest, line by line
+test_results = ""
+last_line = ""
+print("Enter the test results from pytest, line by line. When you are done, enter 2 blank lines.")
+while True:
+    line = input()
+    if line == "" and last_line == "":
+        break
+    test_results += line + "\n"
+    last_line = line
 
 # add the test results to the message flow
-message_flow.append({"role": "user", "content": f"The test results will are delimited here with 3 backticks. ```{test_results}```"})
+message_flow.append({"role": "user", "content": f"The pytest results the above tests are delimited here with 3 backticks. ```{test_results}```"})
 
-
+print(message_flow)
 
 # openai.api_key = config("API_KEY")
 
