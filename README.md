@@ -1,6 +1,5 @@
 # oai_examples
 
-Build a prompt for describing test results
 
 Steps:
 

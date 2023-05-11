@@ -48,17 +48,19 @@ while True:
     last_line = line
 
 # add the test results to the message flow
-message_flow.append({"role": "user", "content": f"The pytest results the above tests are delimited here with 3 backticks. ```{test_results}```"})
+message_flow.append({"role": "user", "content": f"The pytest results for the above tests are delimited here with 3 backticks. ```{test_results}```"})
+
+message_flow.append({"role": "assistant", "content": "summareize the test results. Provide a short executive summary of the test results. then a more detailed summary."})
 
 print(message_flow)
 
-# openai.api_key = config("API_KEY")
+openai.api_key = config("API_KEY")
 
 
-# response = openai.ChatCompletion.create(
-#     model="gpt-4",
-#     messages=message_flow,  
-#     temperature=0
-# )
+response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=message_flow,  
+    temperature=0
+)
 
-# print(response)
+print(response)
