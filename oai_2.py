@@ -23,12 +23,20 @@ for url in test_code.keys():
 
 
 message_flow = [
-    {"role": "system", "content": "Your are an analyst who will review the results of a test run. You will summary what tests were run in the test run and what the results were." +
-     "The tests are for a python package that scores cribbage hands. The package is called cribbage_scorer. The tests are written in python and use the pytest framework." +
-     "cribbage is a card game. The tests are for a package that scores hands in the game."}
+    {
+        "role": "system", "content": "Your are an Software development engineer in Test who will review and report the results of a test CI run.\n" +
+        "You will provide an accurate summary of the tests that wwere run and what the results were.\n" +
+        "You should always provide a summary of the test results, even if the tests failed.\n" +
+        "You should provide a detailed summary of the test results if the tests failed.\n" +
+        "You should provide a high level summary of the test results if the tests passed.\n" +
+        "If a test failed, provide details of the failure. and what that means functionally to the user.\n" +
+        "Keep your response short and impersonal\n" +
+        "Provide context to failires outlining the consequences of the failure.\n" +
+        "Bullet point each test method and briefly explain what was testsed\n"
+    }
 ]
 
-message_flow.append({"role": "user", "content": f"I will now give you the code used to run the tests. there will be {len(test_code)} files containing tests."})
+message_flow.append({"role": "user", "content": f"I will now give you the code used to run the tests. there will be {len(test_code)} files containing tests.\n"})
 
 for url in test_code.keys():
     message_flow.append({"role": "assistant", "content": test_code[url]})
@@ -36,9 +44,9 @@ for url in test_code.keys():
 
 print(message_flow)
 
-# On the command line prompt the user to enter the test results from pytest, line by line
 test_results = ""
 last_line = ""
+print()
 print("Enter the test results from pytest, line by line. When you are done, enter 2 blank lines.")
 while True:
     line = input()
@@ -48,9 +56,10 @@ while True:
     last_line = line
 
 # add the test results to the message flow
-message_flow.append({"role": "user", "content": f"The pytest results for the above tests are delimited here with 3 backticks. ```{test_results}```"})
+message_flow.append({"role": "user", "content": f"The pytest results for the above tests are delimited here with 3 backticks. ```{test_results}```\n"})
 
-message_flow.append({"role": "assistant", "content": "summareize the test results. Provide a short executive summary of the test results. then a more detailed summary."})
+message_flow.append({"role": "assistant", "content": "Summarize the test results. Provide a short executive summary of the test results. then a more detailed summary.\n"})
+message_flow.append({"role": "assistant", "content": "Use markdown headers to separate the sections. And use other Markdown formatting\n"})
 
 print(message_flow)
 
@@ -59,8 +68,12 @@ openai.api_key = config("API_KEY")
 
 response = openai.ChatCompletion.create(
     model="gpt-4",
-    messages=message_flow,  
+    messages=message_flow,
     temperature=0
 )
 
 print(response)
+
+print()
+
+print(response["choices"][0]["message"]["content"])
