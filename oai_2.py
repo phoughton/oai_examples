@@ -60,6 +60,26 @@ message_flow.append({"role": "user", "content": f"The pytest results for the abo
 
 message_flow.append({"role": "assistant", "content": "Summarize the test results. Provide a short executive summary of the test results. then a more detailed summary.\n"})
 message_flow.append({"role": "assistant", "content": "Use markdown headers to separate the sections. And use other Markdown formatting\n"})
+message_flow.append({"role": "assistant", "content": "the format should be as follows:\n"})
+message_flow.append({"role": "assistant", "content": """
+### Test Summary
+
+All tests have passed successfully.
+
+- Total tests: XXX
+- Passed: YYY
+- Failed: ZZZ
+
+### Detailed Test Results
+
+1. **NAME OF TEST**
+   - One sentence description of the test
+   - Number tests passed / failed
+
+2. **NAME OF TEST**
+   - One sentence description of the test
+   - Number tests passed / failed
+"""})
 
 print(message_flow)
 
