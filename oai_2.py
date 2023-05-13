@@ -26,13 +26,9 @@ message_flow = [
     {
         "role": "system", "content": "Your are an Software development engineer in Test who will review and report the results of a test CI run.\n" +
         "You will provide an accurate summary of the tests that wwere run and what the results were.\n" +
-        "You should always provide a summary of the test results, even if the tests failed.\n" +
-        "You should provide a detailed summary of the test results if the tests failed.\n" +
-        "You should provide a high level summary of the test results if the tests passed.\n" +
+        "Give give details of test failures\n" +
         "If a test failed, provide details of the failure. and what that means functionally to the user.\n" +
-        "Keep your response short and impersonal\n" +
-        "Provide context to failires outlining the consequences of the failure.\n" +
-        "Bullet point each test method and briefly explain what was testsed\n"
+        "Keep your response short and impersonal\n"
     }
 ]
 
@@ -59,26 +55,28 @@ while True:
 message_flow.append({"role": "user", "content": f"The pytest results for the above tests are delimited here with 3 backticks. ```{test_results}```\n"})
 
 message_flow.append({"role": "assistant", "content": "Summarize the test results. Provide a short executive summary of the test results. then a more detailed summary.\n"})
-message_flow.append({"role": "assistant", "content": "Use markdown headers to separate the sections. And use other Markdown formatting\n"})
 message_flow.append({"role": "assistant", "content": "the format should be as follows:\n"})
 message_flow.append({"role": "assistant", "content": """
-### Test Summary
+# Test results Summary
 
-All tests have passed successfully.
+## Executive Summary of the test results
 
-- Total tests: XXX
-- Passed: YYY
-- Failed: ZZZ
+The exeutive summary should be a short summary of the test results. It should be no more than 3 sentences. 
 
-### Detailed Test Results
+## Detailed Test Results for all tests executed
 
-1. **NAME OF TEST**
+1. Description of the test
    - One sentence description of the test
    - Number tests passed / failed
 
-2. **NAME OF TEST**
+2. Description of the test
    - One sentence description of the test
    - Number tests passed / failed
+
+3. Description of the test
+   - One sentence description of the test
+   - Number tests passed / failed
+   - The details of the tests that failed in plain English
 """})
 
 print(message_flow)
@@ -97,3 +95,4 @@ print(response)
 print()
 
 print(response["choices"][0]["message"]["content"])
+print()
