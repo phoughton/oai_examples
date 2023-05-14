@@ -4,6 +4,8 @@ import openai
 import requests
 
 
+openai.api_key = config("API_KEY")
+
 test_code = {
     "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/play/play_scorer_exceptions_test.py": None,
     "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/play/play_scorer_test.py": None,
@@ -22,6 +24,28 @@ for url in test_code.keys():
         test_code[url] = response.text
 
 
+code_and_instructions = [{"role": "system", "content" : f"""
+You are senior software develeopment engineer in test.
+You should analyse a the following triple backticked code and provide a summary of the tests that were run and what the results were.
+Provide a one to two sentence description of each test.
+Do not comment on test results.
+Use markdown format.
+```
+{test_code}
+```
+"""}]
+
+
+response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=code_and_instructions,
+    temperature=0
+)
+
+
+test_summary = response["choices"][0]["message"]["content"]
+
+
 message_flow = [
     {
         "role": "system", "content": "Your are an Software development engineer in Test who will review and report the results of a test CI run.\n" +
@@ -37,8 +61,6 @@ message_flow.append({"role": "user", "content": f"I will now give you the code u
 for url in test_code.keys():
     message_flow.append({"role": "assistant", "content": test_code[url]})
 
-
-print(message_flow)
 
 test_results = ""
 last_line = ""
@@ -57,11 +79,11 @@ message_flow.append({"role": "user", "content": f"The pytest results for the abo
 message_flow.append({"role": "assistant", "content": "Summarize the test results. Provide a short executive summary of the test results. then a more detailed summary.\n"})
 message_flow.append({"role": "assistant", "content": "the format should be as follows:\n"})
 message_flow.append({"role": "assistant", "content": """
-# Test results Summary
+## Test results Summary
 
 ## Executive Summary of the test results
 
-The exeutive summary should be a short summary of the test results. It should be no more than 3 sentences. 
+The exeutive summary should be a summary of the test results. It should be no more than 5 sentences. 
 
 ## Detailed Test Results for all tests executed
 
@@ -81,9 +103,6 @@ The exeutive summary should be a short summary of the test results. It should be
 
 print(message_flow)
 
-openai.api_key = config("API_KEY")
-
-
 response = openai.ChatCompletion.create(
     model="gpt-4",
     messages=message_flow,
@@ -94,5 +113,14 @@ print(response)
 
 print()
 
+print("# An analysis of what the tests do is as follows:\n")
+print(test_summary)
+print()
+
 print(response["choices"][0]["message"]["content"])
 print()
+
+# Write the test results to a file in markdown format
+with open("test_results.md", "w") as f:
+    f.write(test_summary)
+    f.write(response["choices"][0]["message"]["content"])
