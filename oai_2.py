@@ -2,17 +2,53 @@ import os
 from decouple import config
 import openai
 import requests
+import yaml
 
 
 openai.api_key = config("API_KEY")
 
-test_code = {
-    "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/play/play_scorer_exceptions_test.py": None,
-    "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/play/play_scorer_test.py": None,
-    "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/show/show_scorer__impossible_score_test.py": None,
-    "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/show/show_scorer_exceptions_test.py": None,
-    "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/show/show_scorer_test.py": None
-}
+# Choose a yaml file to read
+# Ask the user to choose one of the yaml files in the current directory
+
+# list the yaml files in the current directory, numbered
+yaml_files = []
+for file in os.listdir():
+    if file.endswith(".yaml"):
+        yaml_files.append(file)
+
+# print the numbered list of yaml files
+print("The following yaml files are available:")
+for i in range(len(yaml_files)):
+    print(f"{i}. {yaml_files[i]}")
+
+# ask the user to choose one of the yaml files from a numbered list:
+yaml_file = ""
+while True:
+    try:
+        yaml_file = input("Enter the number of the yaml file you want to use: ")
+        if yaml_file == "":
+            print("Exiting...")
+            exit(0)
+        yaml_file = int(yaml_file)
+        break
+    except:
+        print("Please enter a number")
+
+yaml_file_name = yaml_files[yaml_file]
+
+print(f"You chose {yaml_file_name}")
+
+with open(yaml_file_name, 'r') as file:
+    data = yaml.safe_load(file)
+
+test_code = {}
+for url in data["test_code_urls"]:
+    test_code[url] = None
+
+print("The following urls will be used to download the test code:")
+for url in test_code.keys():
+    print(url)
+
 
 # download the source code for each url key in test_code
 for url in test_code.keys():
@@ -27,7 +63,7 @@ for url in test_code.keys():
 code_and_instructions = [{"role": "system", "content" : f"""
 You are senior software develeopment engineer in test.
 You should analyse a the following triple backticked code and provide a summary of the tests that were run and what the results were.
-Provide a one to two sentence description of each test.
+Provide a verbose description sentence description of each test.
 Do not comment on test results.
 Use markdown format.
 ```
@@ -122,5 +158,8 @@ print()
 
 # Write the test results to a file in markdown format
 with open("test_results.md", "w") as f:
+    f.write("# An analysis of what the tests do is as follows:\n")
     f.write(test_summary)
+    f.write("\n")
+    f.write("# The test results are as follows:\n")
     f.write(response["choices"][0]["message"]["content"])
