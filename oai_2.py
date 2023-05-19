@@ -60,9 +60,10 @@ for url in test_code.keys():
         test_code[url] = response.text
 
 
-code_and_instructions = [{"role": "system", "content" : f"""
+code_and_instructions = [{"role": "system", "content": f"""
 You are senior software develeopment engineer in test.
-You should analyse a the following triple backticked code and provide a summary of the tests that were run and what the results were.
+You should analyse a the following triple backticked code and provide a
+summary of the tests that were run and what the results were.
 Provide a verbose description sentence description of each test.
 Do not comment on test results.
 Use markdown format.
@@ -84,11 +85,17 @@ test_summary = response["choices"][0]["message"]["content"]
 
 message_flow = [
     {
-        "role": "system", "content": "Your are an Software development engineer in Test who will review and report the results of a test CI run.\n" +
-        "You will provide an accurate summary of the tests that wwere run and what the results were.\n" +
-        "Give give details of test failures\n" +
-        "If a test failed, provide details of the failure. and what that means functionally to the user.\n" +
-        "Keep your response short and impersonal\n"
+        "role": "system", "content": """Your are an Software development engineer in Test who will review and report the results of a test CI run.\n" +
+        You will provide an accurate summary of the tests that wwere run and
+        what the results were:
+
+        1) Give give details of test failures in English
+        If a test failed, provide details of the failure. and what that
+        means functionally to the user.
+        Keep your response short and impersonal
+        
+        2) Also, below the above response provide the same information in JSON format.
+        """
     }
 ]
 
