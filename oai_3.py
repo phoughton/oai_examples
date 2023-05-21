@@ -46,7 +46,6 @@ print("The following urls will be used to download the test code:")
 for url in test_code.keys():
     print(url)
 
-
 # download the source code for each url key in test_code
 for url in test_code.keys():
     # get the content of the url
@@ -58,25 +57,33 @@ for url in test_code.keys():
 
 
 code_and_instructions = [{"role": "system", "content": f"""
-You are senior software develeopment engineer in test.
 You should analyse a the following triple backticked code and provide a
 summary of the tests that were run and what the results were.
-Provide a verbose description sentence description of each test.
-Do not comment on test results.
+Provide a concise description sentence description of each test.
 Use markdown format.
 ```
 {test_code}
 ```
 """}]
 
+print()
+print("Calculating summary...")
 
 response = openai.ChatCompletion.create(
     model="gpt-4",
     messages=code_and_instructions,
-    temperature=0
+    temperature=0,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
 )
 
-
 test_summary = response["choices"][0]["message"]["content"]
-
+print()
 print(test_summary)
+
+# Write the test summary to a file in the output folder
+with open("output/test_summary.md", "w") as file:
+    file.write(test_summary)
+
+print("Done.")
