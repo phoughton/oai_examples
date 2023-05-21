@@ -16,6 +16,7 @@ what the results were:
 If a test failed, provide details of the failure. and what that
 means functionally to the user.
 Keep your response short and impersonal
+Do not calculate any totals or percentages. Just provide the details of the failures.
 
 2) Also, below the above response provide the same information in JSON format.
 
@@ -25,26 +26,30 @@ Keep your response short and impersonal
 ]
 
 test_results = ""
-last_line = ""
-print()
-print("Enter the test results from pytest, line by line. When you are done, enter 2 blank lines.")
-while True:
-    line = input()
-    if line == "" and last_line == "":
-        break
-    test_results += line + "\n"
-    last_line = line
+# Create a numbered list the results files in the input folder and ask the user to choose one of them by number
+results_files = os.listdir("input")
+for i, file in enumerate(results_files):
+    test_results += f"{i+1}. {file}\n"
+
+# let user choose the test results file and then read the contents of that file into a variable called test_results
+file_number = input(f"Please choose the test results file you want to review by number:\n{test_results}\n")
+file_number = int(file_number) - 1
+test_results = open(f"input/{results_files[file_number]}", "r").read()
 
 # add the test results to the message flow
 message_flow.append({"role": "user", "content": f"The pytest results for the above tests are delimited here with 3 backticks. ```{test_results}```\n"})
+
+
 message_flow.append({"role": "assistant", "content": """
 Summarize the test results. Provide a short executive summary of the test results. then a more detailed summary.
-message_flow.append({"role": "assistant", "content": "the format should be as follows:
+
+the format should be as follows:
+
 ## Test results Summary
 
 ## Executive Summary of the test results
 
-The exeutive summary should be a summary of the test results. It should be no more than 5 sentences. 
+The executive summary should be a summary of the test results. 
 
 ## Detailed Test Results for all tests executed
 
@@ -52,23 +57,21 @@ The exeutive summary should be a summary of the test results. It should be no mo
    - One sentence description of the test
    - Number tests passed / failed
 
-2. Description of the test
-   - One sentence description of the test
-   - Number tests passed / failed
+Repeat for each test file executed.
 
-3. Description of the test
-   - One sentence description of the test
-   - Number tests passed / failed
-   - The details of the tests that failed in plain English
+The details of the tests that failed in plain English
 
-## The JSON version of these test results:
+
+## The JSON version of these test passes and failures:
 [PLACE THE JSON TEST RESULTS HERE]
 
-## The XML version of these test results:
+
+## The XML version of these test passes and failures:
 [PLACE THE XML TEST RESULTS HERE]
 """})
 
 print(message_flow)
+print("\nCalculating the test results...\n")
 
 response = openai.ChatCompletion.create(
     model="gpt-4",
@@ -87,6 +90,6 @@ print(response["choices"][0]["message"]["content"])
 print()
 
 # Write the test results to a file in markdown format
-with open("test_results.md", "w") as f:
+with open("output/test_results.md", "w") as f:
     f.write("# The test results are as follows:\n")
     f.write(response["choices"][0]["message"]["content"])

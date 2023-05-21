@@ -1,0 +1,29 @@
+python -m pytest --tb=no 
+============================================= test session starts ==============================================
+platform linux -- Python 3.10.4, pytest-7.3.1, pluggy-1.0.0
+rootdir: /workspaces/cribbage_scorer
+plugins: anyio-3.6.2
+collected 1096 items                                                                                           
+
+tests/play/play_scorer_exceptions_test.py ......                                                         [  0%]
+tests/play/play_scorer_test.py ..........................................                                [  4%]
+tests/show/show_scorer__impossible_score_test.py ....................................................... [  9%]
+........................................................................................................ [ 18%]
+........................................................................................................ [ 28%]
+........................................................................................................ [ 37%]
+........................................................................................................ [ 47%]
+........................................................................................................ [ 56%]
+........................................................................................................ [ 66%]
+........................................................................................................ [ 75%]
+........................................................................................................ [ 85%]
+........................................................................................................ [ 94%]
+.........                                                                                                [ 95%]
+tests/show/show_scorer_exceptions_test.py ...                                                            [ 95%]
+tests/show/show_scorer_test.py ..........................FF...F........F....                             [100%]
+
+=========================================== short test summary info ============================================
+FAILED tests/show/show_scorer_test.py::test_his_nobs[starter1-hand1-False-1-One for his nobs (1pt)] - AssertionError: The calculated score was: (2, 'One for his nobs (1pt)'), the expected score: 1. The starter...
+FAILED tests/show/show_scorer_test.py::test_etc_hands__crib_neutral[starter0-hand0-29-Perfect hand, 29] - AssertionError: The calc score was: (30, "Four of a kind: 5s (12pts)|Made 15 from [(5, 'H'), (11, 'D')] (2p...
+FAILED tests/show/show_scorer_test.py::test_etc_hands__crib_neutral[starter4-hand4-23-4th best hand, 23] - AssertionError: The calc score was: (24, "Three of a kind: 5s (6pts)|Double Jacks (2pts)|Made 15 from [(11,...
+FAILED tests/show/show_scorer_test.py::test_etc_hands__crib_neutral[starter13-hand13-18-18, highest with 5pt flush] - AssertionError: The calc score was: (19, "Made 15 from [(5, 'H'), (10, 'H')] (2pts)|Made 15 from [(5, 'H'),...
+======================================== 4 failed, 1092 passed in 1.61s ========================================
