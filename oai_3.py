@@ -3,20 +3,23 @@ from decouple import config
 import openai
 import requests
 import yaml
+import time
 
+
+input_folder = "input"
 
 openai.api_key = config("API_KEY")
 
 # list the yaml files in the current directory, numbered
 yaml_files = []
-for file in os.listdir():
+for file in os.listdir(input_folder):
     if file.endswith(".yaml"):
         yaml_files.append(file)
 
 # print the numbered list of yaml files
 print("The following yaml files are available:")
 for i in range(len(yaml_files)):
-    print(f"{i}. {yaml_files[i]}")
+    print(f"{i+1}. {yaml_files[i]}")
 
 # ask the user to choose one of the yaml files from a numbered list:
 yaml_file = ""
@@ -26,12 +29,13 @@ while True:
         if yaml_file == "":
             print("Exiting...")
             exit(0)
-        yaml_file = int(yaml_file)
+        yaml_file = int(yaml_file)-1
         break
-    except:
-        print("Please enter a number")
+    except ValueError:
+        print("That was not a valid number. Please try again.")
+        time.sleep(1)
 
-yaml_file_name = yaml_files[yaml_file]
+yaml_file_name = f"{input_folder}/{yaml_files[yaml_file]}"
 
 print(f"You chose {yaml_file_name}")
 

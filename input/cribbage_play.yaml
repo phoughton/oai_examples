@@ -1,0 +1,4 @@
+test_code_urls:
+  - "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/play/play_scorer_exceptions_test.py"
+  - "https://raw.githubusercontent.com/phoughton/cribbage_scorer/master/tests/play/play_scorer_test.py"
+

@@ -28,6 +28,7 @@ Do not calculate any totals or percentages. Just provide the details of the fail
 test_results = ""
 # Create a numbered list the results files in the input folder and ask the user to choose one of them by number
 results_files = os.listdir("input")
+results_files = [file for file in results_files if file.endswith(".txt")]
 for i, file in enumerate(results_files):
     test_results += f"{i+1}. {file}\n"
 
