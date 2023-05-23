@@ -61,9 +61,8 @@ for url in test_code.keys():
 
 
 code_and_instructions = [{"role": "system", "content": f"""
-You should analyse a the following triple backticked code and provide a
-summary of the tests that were run and what the results were.
-Provide a concise description sentence description of each test.
+You should analyse a the following triple backticked code.
+Provide a detailed summary of the tests and what they test.
 Use markdown format.
 ```
 {test_code}
@@ -86,8 +85,8 @@ test_summary = response["choices"][0]["message"]["content"]
 print()
 print(test_summary)
 
-# Write the test summary to a file in the output folder
-with open("output/test_summary.md", "w") as file:
+out_file = "output/test_summary.md"
+with open(out_file, "w") as file:
     file.write(test_summary)
 
-print("Done.")
+print(f"Summary written to {out_file}")
