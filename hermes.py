@@ -1,6 +1,6 @@
-import os
 from decouple import config
 import openai
+from file_chooser import choose_a_file
 
 
 openai.api_key = config("API_KEY")
@@ -16,7 +16,7 @@ what the results were:
 If a test failed, provide details of the failure. and what that
 means functionally to the user.
 Keep your response short and impersonal
-Do not calculate any totals or percentages. Just provide the details of the failures.
+Do not calculate any totals or percentages.
 
 2) Also, below the above response provide the same information in JSON format.
 
@@ -25,21 +25,10 @@ Do not calculate any totals or percentages. Just provide the details of the fail
     }
 ]
 
-test_results = ""
-# Create a numbered list the results files in the input folder and ask the user to choose one of them by number
-results_files = os.listdir("input")
-results_files = [file for file in results_files if file.endswith(".txt")]
-for i, file in enumerate(results_files):
-    test_results += f"{i+1}. {file}\n"
-
-# let user choose the test results file and then read the contents of that file into a variable called test_results
-file_number = input(f"Please choose the test results file you want to review by number:\n{test_results}\n")
-file_number = int(file_number) - 1
-test_results = open(f"input/{results_files[file_number]}", "r").read()
-
-# add the test results to the message flow
+# Ask the user to choose the test results file and then read the contents of that file into a variable called test_results
+test_results = choose_a_file("input", ".txt", "Please choose the test results file you want to review by number:")
+print()
 message_flow.append({"role": "user", "content": f"The pytest results for the above tests are delimited here with 3 backticks. ```{test_results}```\n"})
-
 
 message_flow.append({"role": "assistant", "content": """
 Summarize the test results. Provide a short executive summary of the test results. then a more detailed summary.
@@ -48,19 +37,24 @@ the format should be as follows:
 
 ## Test results Summary
 
+A description of the test results. Including: 
+ - The number of tests executed - exactly, 
+  - the number of tests passed and the number of tests failed - based on the data provided by the user only.
+
 ## Executive Summary of the test results
 
-The executive summary should be a summary of the test results. 
+The executive summary should be a summary of the test results.
 
 ## Detailed Test Results for all tests executed
 
-1. Description of the test
-   - One sentence description of the test
-   - Number tests passed / failed
+Repeat this for each test file in the user provided results file:
 
-Repeat for each test file executed.
+- [TEST FILE NAME] Description of the test
+    - One or two sentence explanation of the test in plain English
+    - [NUMBER OF TESTS FAILED]
 
-The details of the tests that failed in plain English
+
+## The details of the tests that failed in plain English
 
 
 ## The JSON version of these test passes and failures:
@@ -84,13 +78,12 @@ response = openai.ChatCompletion.create(
 )
 
 print(response)
-
-print()
-
-print(response["choices"][0]["message"]["content"])
 print()
 
 # Write the test results to a file in markdown format
 with open("output/test_results.md", "w") as f:
     f.write("# The test results are as follows:\n")
     f.write(response["choices"][0]["message"]["content"])
+
+print("The test results have been written to output/test_results.md")
+
