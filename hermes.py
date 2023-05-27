@@ -8,54 +8,43 @@ openai.api_key = config("API_KEY")
 message_flow = [
     {
         "role": "system", "content": """
-Your are an Software development engineer in Test who will review and report the results of a test CI run.
-You will provide an accurate summary of the tests that wwere run and
-what the results were:
+Your are an Software development engineer in Test who will review and report the results of some tests.
+You will provide an accurate summary of the tests that were run and the results of those tests.
 
-1) Give give details of test failures in English
-If a test failed, provide details of the failure. and what that
-means functionally to the user.
+1) Give give details of test failures in plain English
+If a test failed, provide details of the failure.
 Keep your response short and impersonal
-Do not calculate any totals or percentages.
+Use numbers provided by the user and do not calculate numbers, totals or percentages.
 
-2) Also, below the above response provide the same information in JSON format.
+2) Where asked, provide the same information in JSON format.
 
-3) Also, below the above response provide the same information in XML format.
-"""
-    }
-]
+3) Where asked provide the same information in XML format.
 
-# Ask the user to choose the test results file and then read the contents of that file into a variable called test_results
-test_results = choose_a_file("input", ".txt", "Please choose the test results file you want to review by number:")
-print()
-message_flow.append({"role": "user", "content": f"The pytest results for the above tests are delimited here with 3 backticks. ```{test_results}```\n"})
+The format should be as follows:
 
-message_flow.append({"role": "assistant", "content": """
-Summarize the test results. Provide a short executive summary of the test results. then a more detailed summary.
 
-the format should be as follows:
+# Test results Summary
 
-## Test results Summary
-
-A description of the test results. Including: 
- - The number of tests executed - exactly, 
-  - the number of tests passed and the number of tests failed - based on the data provided by the user only.
+A description of the test results. Including:
+    - The number of tests executed based on the data provided by the user.
+    - the number of tests passed and the number of tests failed based on the data provided by the user.
 
 ## Executive Summary of the test results
 
-The executive summary should be a summary of the test results.
+The executive summary should be a summary of the test results in plain English with a high standard of accuracy and vocabulary.
 
 ## Detailed Test Results for all tests executed
 
-Repeat this for each test file in the user provided results file:
+Repeat the following for each and every test mentioned in the user provided results:
 
-- [TEST FILE NAME] Description of the test
+1. [TEST FILE NAME] Description of the test
     - One or two sentence explanation of the test in plain English
     - [NUMBER OF TESTS FAILED]
 
 
 ## The details of the tests that failed in plain English
 
+Include the of each file that had a test failure and the number of tests that failed in that file - based on data provided by the user
 
 ## The JSON version of these test passes and failures:
 [PLACE THE JSON TEST RESULTS HERE]
@@ -63,6 +52,20 @@ Repeat this for each test file in the user provided results file:
 
 ## The XML version of these test passes and failures:
 [PLACE THE XML TEST RESULTS HERE]
+
+"""
+    }
+]
+
+# Ask the user to choose the test results file and then read the contents of that file into a variable called test_results
+test_results = choose_a_file("input", ".txt", "Please choose the test results file you want to review by number:")
+print()
+message_flow.append({"role": "user", "content": f"My pytest results for the tests are delimited here with 3 backticks. ```{test_results}```\n"})
+
+message_flow.append({"role": "assistant", "content": """
+
+I have read the test results and I will now provide a summary of the test results.
+
 """})
 
 print(message_flow)
