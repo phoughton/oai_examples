@@ -35,7 +35,7 @@ The executive summary should be a summary of the test results in plain English w
 
 ## Detailed Test Results for all tests executed
 
-Repeat the following for each and every test file mentioned in the user provided results:
+In this section repeat the following descriptiom for each and every test file mentioned in the user provided results:
 
 1. [TEST FILE NAME] Description of the test
     - One or two sentence explanation of the test in plain English
@@ -44,7 +44,7 @@ Repeat the following for each and every test file mentioned in the user provided
 
 ## The details of the tests that failed in plain English
 
-Include the of each file that had a test failure and the number of tests that failed in that file - based on data provided by the user
+In this section explain the details of the test failure in plain English.
 
 ## The JSON version of these test passes and failures:
 [PLACE THE JSON TEST RESULTS HERE]
