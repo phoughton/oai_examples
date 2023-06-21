@@ -1,0 +1,7 @@
+The starter card is a jack of clubs.
+The hand is a crib.
+The hand is:
+5 of Hearts
+5 of clubs
+10 of Hearts
+Queen of clubs

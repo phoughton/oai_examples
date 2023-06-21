@@ -70,7 +70,7 @@ print(message_flow)
 print("\nCalculating the test results...\n")
 
 response = openai.ChatCompletion.create(
-    model="gpt-4",
+    model="gpt-4-0613",
     messages=message_flow,
     temperature=0,
     top_p=1,
