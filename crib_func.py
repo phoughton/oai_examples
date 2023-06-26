@@ -67,7 +67,34 @@ if response_message["function_call"]["name"] == "get_cribbage_hand_score":
     print(response_message)
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
     results = requests.post(url=THE_SCORER_URL, data=response_message["function_call"]["arguments"], headers=headers).json()
+else:
+    print("Bad things have occured, head for the hills.")
+    exit(1)
 
+the_score_details = results["message"]
+print(results["message"])
 
-print(results)
+message_flow2 = [
+    {
+        "role": "system", "content": """
+You are an expert at scoring games.
+You should take the Cribbage Show score results provided and clarify them in plain English.
+Remember to translate the raw results into plain English, for example:
+(5, 'H') means 5 of Hearts, 
+(11, 'C') means Jack of Clubs etc.
+"""}
+]
+message_flow2.append({"role": "assistant", "content": f"These are the calculated results that need explaining```{the_score_details}```\n"})
+
+response2 = openai.ChatCompletion.create(
+    model="gpt-4-0613",
+    messages=message_flow2,
+    temperature=0,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+)
+response_message = response2["choices"][0]["message"]
+
 print()
+print(response_message["content"])
