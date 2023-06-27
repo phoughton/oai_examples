@@ -1,8 +1,7 @@
 from decouple import config
 import openai
-import requests
-from file_chooser import choose_a_file
-
+import subprocess
+import json
 
 openai.api_key = config("API_KEY")
 
@@ -17,7 +16,7 @@ When presented with a coding request, You should provide working code as an argu
 print()
 # message_flow.append({"role": "user", "content": f"Please score my cribbage hand: ```{hand_desc}```\n"})
 
-message_flow.append({"role": "user", "content": f"Please create the first 10 fibonacci numbers."})
+message_flow.append({"role": "user", "content": f"Please create the first 10 fibonacci numbers, and print them out."})
 
 
 functions = [
@@ -27,12 +26,12 @@ functions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "code_question": {
+                "the_code": {
                     "type": "string",
                     "description": "A description of a problem that needs some python code to solve.",
                 }
             },
-            "required": ["code_question"],
+            "required": ["the_code"],
         }
     }
 ]
@@ -54,9 +53,15 @@ response_message = response["choices"][0]["message"]
 results = ""
 print(response_message)
 if response_message["function_call"]["name"] == "run_python_code":
-    code = response_message["function_call"]["arguments"]
-    exec(code)
+    code = json.loads(response_message["function_call"]["arguments"])["the_code"]
 else:
     print("Bad things have occured, head for the hills.")
     exit(1)
+
+print(f"Running the following code:\n{code}")
+print()
+results = subprocess.run(["python", "-c", code], capture_output=True)
+print(results.stdout.decode("utf-8"))
+print(results.stderr.decode("utf-8"))
+
 
