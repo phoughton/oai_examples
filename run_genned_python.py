@@ -16,7 +16,7 @@ When presented with a coding request, You should provide working code as an argu
 print()
 # message_flow.append({"role": "user", "content": f"Please score my cribbage hand: ```{hand_desc}```\n"})
 
-message_flow.append({"role": "user", "content": f"Please create the first 10 fibonacci numbers, and print them out."})
+message_flow.append({"role": "user", "content": f"Please create a matplotlib pie chart where X=10%, Y=50% and Z=40%, on a pink background."})
 
 
 functions = [
