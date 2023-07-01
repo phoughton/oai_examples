@@ -15,7 +15,6 @@ You should calculate the score for the game of cribbage.
 """}
 ]
 
-# Ask the user to choose the test results file and then read the contents of that file into a variable called test_results
 hand_desc = choose_a_file("input_crib_hands", ".txt", "Please choose the hand of cards by number:")
 print()
 message_flow.append({"role": "user", "content": f"Please score my cribbage hand: ```{hand_desc}```\n"})
