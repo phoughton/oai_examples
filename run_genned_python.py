@@ -16,7 +16,37 @@ When presented with a coding request, You should provide working code as an argu
 print()
 # message_flow.append({"role": "user", "content": f"Please score my cribbage hand: ```{hand_desc}```\n"})
 
-message_flow.append({"role": "user", "content": f"Please create a matplotlib pie chart where X=10%, Y=50% and Z=40%, on a pink background."})
+message_flow.append({"role": "user", "content": f"""Please create a matplotlib pie chart for these pytest results, 
+The pie chart should focus on the number of tests in each test file, include a title and legend.
+                     Run python -m pytest
+============================= test session starts ==============================
+platform linux -- Python 3.10.6, pytest-7.4.0, pluggy-1.2.0
+rootdir: /home/runner/work/cribbage_scorer/cribbage_scorer
+collected 1098 items
+
+tests/play/play_scorer_exceptions_test.py ......                         [  0%]
+tests/play/play_scorer_test.py ......................................... [  4%]
+.                                                                        [  4%]
+tests/show/show_scorer__impossible_score_test.py ....................... [  6%]
+........................................................................ [ 13%]
+........................................................................ [ 19%]
+........................................................................ [ 26%]
+........................................................................ [ 32%]
+........................................................................ [ 39%]
+........................................................................ [ 45%]
+........................................................................ [ 52%]
+........................................................................ [ 58%]
+........................................................................ [ 65%]
+........................................................................ [ 72%]
+........................................................................ [ 78%]
+........................................................................ [ 85%]
+........................................................................ [ 91%]
+.........................................                                [ 95%]
+tests/show/show_scorer_exceptions_test.py ...                            [ 95%]
+tests/show/show_scorer_test.py ......................................... [ 99%]
+......                                                                   [100%]
+
+============================= 1098 passed in 1.13s ============================="""})
 
 
 functions = [
@@ -28,7 +58,7 @@ functions = [
             "properties": {
                 "the_code": {
                     "type": "string",
-                    "description": "A description of a problem that needs some python code to solve.",
+                    "description": "A description of a problem that needs some python code to solve. You must include double escaped newlines in teh code arguments.",
                 }
             },
             "required": ["the_code"],
@@ -53,14 +83,16 @@ response_message = response["choices"][0]["message"]
 results = ""
 print(response_message)
 if response_message["function_call"]["name"] == "run_python_code":
-    code = json.loads(response_message["function_call"]["arguments"])["the_code"]
+    print(response_message["function_call"]["arguments"])
+    code_in_json = json.loads(response_message["function_call"]["arguments"])
+    the_actual_code = code_in_json["the_code"]
 else:
     print("Bad things have occured, head for the hills.")
     exit(1)
 
-print(f"Running the following code:\n{code}")
+print(f"Running the following code:\n{the_actual_code}")
 print()
-results = subprocess.run(["python", "-c", code], capture_output=True)
+results = subprocess.run(["python", "-c", the_actual_code], capture_output=True)
 print(results.stdout.decode("utf-8"))
 print(results.stderr.decode("utf-8"))
 
