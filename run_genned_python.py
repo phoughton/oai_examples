@@ -10,15 +10,15 @@ message_flow = [
         "role": "system", "content": """
 You are an coder who provides working python code.
 When presented with a coding request, You should provide working code as an argument to the function.
+Base the data solely on the information provided in the request.
 """}
 ]
 
 print()
 # message_flow.append({"role": "user", "content": f"Please score my cribbage hand: ```{hand_desc}```\n"})
 
-message_flow.append({"role": "user", "content": f"""Please create a matplotlib pie chart for these pytest results, 
-The pie chart should focus on the number of tests in each test file, include a title and legend.
-                     Run python -m pytest
+message_flow.append({"role": "user", "content": f"""Please create a pie chart for these pytest results, The pie chart should focus on the number of tests in each test file, include a title and legend. The decimal points are each 1 test executed, total these to get the number of tests. These dots may cover multiple lines for the same test file.
+Run python -m pytest
 ============================= test session starts ==============================
 platform linux -- Python 3.10.6, pytest-7.4.0, pluggy-1.2.0
 rootdir: /home/runner/work/cribbage_scorer/cribbage_scorer
@@ -58,7 +58,7 @@ functions = [
             "properties": {
                 "the_code": {
                     "type": "string",
-                    "description": "A description of a problem that needs some python code to solve. You must include double escaped newlines in teh code arguments.",
+                    "description": "The Python code to complete the required task. You must include double escaped newlines in the code arguments.",
                 }
             },
             "required": ["the_code"],
