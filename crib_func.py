@@ -2,6 +2,7 @@ from decouple import config
 import openai
 import requests
 from file_chooser import choose_a_file
+import tkinter as tk
 
 
 openai.api_key = config("API_KEY")
@@ -97,3 +98,14 @@ response_message = response2["choices"][0]["message"]
 
 print()
 print(response_message["content"])
+
+# Create a window
+window = tk.Tk()
+
+window.title("Cribbage Score")
+response_label = tk.Label(window, text=response_message["content"], wraplength=500)
+response_label.pack()
+
+# Run the window
+window.mainloop()
+
