@@ -15,8 +15,6 @@ Base the data solely on the information provided in the request.
 ]
 
 print()
-# message_flow.append({"role": "user", "content": f"Please score my cribbage hand: ```{hand_desc}```\n"})
-
 message_flow.append({"role": "user", "content": f"""Please create a pie chart for these pytest results, The pie chart should focus on the number of tests in each test file, include a title and legend. The decimal points are each 1 test executed, total these to get the number of tests. These dots may cover multiple lines for the same test file.
 Run python -m pytest
 ============================= test session starts ==============================
@@ -92,7 +90,9 @@ else:
 
 print(f"Running the following code:\n{the_actual_code}")
 print()
-results = subprocess.run(["python", "-c", the_actual_code], capture_output=True)
+results = subprocess.run(["python",
+                          "-c", the_actual_code],
+                         capture_output=True)
 print(results.stdout.decode("utf-8"))
 print(results.stderr.decode("utf-8"))
 

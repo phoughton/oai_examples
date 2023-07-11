@@ -6,7 +6,7 @@ import tkinter as tk
 
 
 openai.api_key = config("API_KEY")
-THE_SCORER_URL = config("SCORING_URL")
+THE_SCORER_URL = str(config("SCORING_URL"))
 
 message_flow = [
     {
@@ -60,13 +60,16 @@ response = openai.ChatCompletion.create(
     frequency_penalty=0,
     presence_penalty=0
 )
-response_message = response["choices"][0]["message"]
+resp_message = response["choices"][0]["message"]
 
 results = ""
-if response_message["function_call"]["name"] == "get_cribbage_hand_score":
-    print(response_message)
-    headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-    results = requests.post(url=THE_SCORER_URL, data=response_message["function_call"]["arguments"], headers=headers).json()
+if resp_message["function_call"]["name"] == "get_cribbage_hand_score":
+    print(resp_message)
+    headers = {'Content-type': 'application/json',
+               'Accept': 'application/json'}
+    results = requests.post(
+        url=THE_SCORER_URL, data=resp_message["function_call"]["arguments"],
+        headers=headers).json()
 else:
     print("Bad things have occured, head for the hills.")
     exit(1)
@@ -94,16 +97,16 @@ response2 = openai.ChatCompletion.create(
     frequency_penalty=0,
     presence_penalty=0
 )
-response_message = response2["choices"][0]["message"]
+resp_message = response2["choices"][0]["message"]
 
 print()
-print(response_message["content"])
+print(resp_message["content"])
 
 # Create a window
 window = tk.Tk()
 
 window.title("Cribbage Score")
-response_label = tk.Label(window, text=response_message["content"], wraplength=500)
+response_label = tk.Label(window, text=resp_message["content"], wraplength=500)
 response_label.pack()
 
 # Run the window
